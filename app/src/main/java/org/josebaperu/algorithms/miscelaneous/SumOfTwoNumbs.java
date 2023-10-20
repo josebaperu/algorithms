@@ -13,7 +13,7 @@ public class SumOfTwoNumbs {
 
         for(int idx = 0; idx < nums.length ; idx++){
             int complement = target - nums[idx];
-            int i = Arrays.binarySearch(nums,complement);
+            int i = lastIndexOf(nums,complement);
             if( i > -1)
                 return new int[] {idx,i};
 
@@ -21,9 +21,9 @@ public class SumOfTwoNumbs {
 
         return new int[0];
     }
-    private static int indexOfIntArray(int[] array, int key) {
+    private static int lastIndexOf(int[] array, int key) {
         int returnvalue = -1;
-        for (int i = 0; i < array.length; ++i) {
+        for (int i = array.length -1; i >=0 ; --i) {
             if (key == array[i]) {
                 returnvalue = i;
                 break;
