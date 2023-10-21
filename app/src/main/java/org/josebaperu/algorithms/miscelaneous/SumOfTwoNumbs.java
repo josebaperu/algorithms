@@ -13,9 +13,10 @@ public class SumOfTwoNumbs {
         Map<Integer, Integer> map = new HashMap<>();
         for(int idx = 0; idx < nums.length ; idx++){
             int current = nums[idx];
-            int complement = target - current;
             if(map.containsKey(current))
                 return new int[] {map.get(current),idx};
+
+            int complement = target - current;
             map.put(complement, idx);
         }
         return new int[0];
