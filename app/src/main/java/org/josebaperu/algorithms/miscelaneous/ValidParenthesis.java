@@ -11,23 +11,21 @@ public class ValidParenthesis {
         System.out.println(isValid(given));
     }
     static boolean isValid(String s) {
-        List<String> list = Arrays.asList(s.split(""));
-        Stack<String> stack = new Stack<>();
-        Map<String, String> map = Map.of(
-                ")","(",
-                "]","[",
-                "}","{");
-        for(String str: list){
-                stack.push(str);
-                if(map.containsKey(str)){
-                    String pop = stack.pop();
-                    if(!stack.isEmpty() && (map.get(pop)).equals(stack.peek())){
-                        stack.pop();
-                    } else{
-                        stack.push(pop);
-                    }
+        Stack<Character> stack = new Stack<>();
+        Map<Character, Character> map = Map.of(
+                ')','(',
+                ']','[',
+                '}','{');
+        for(char c : s.toCharArray()){
+            stack.push(c);
+            if(map.containsKey(c)){
+                char pop = stack.pop();
+                if(!stack.isEmpty() && (map.get(pop)).equals(stack.peek())){
+                    stack.pop();
+                } else{
+                    stack.push(pop);
                 }
-
+            }
         }
         return stack.isEmpty();
     }
