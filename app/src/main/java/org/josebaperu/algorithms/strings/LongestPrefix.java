@@ -16,15 +16,15 @@ public class LongestPrefix {
         while(isProcessing){
             Map<Character,Integer> indicesMap = new LinkedHashMap<>();
             Character charr = null;
-            int forIdx = 1;
+            int counter = 1;
             for (String word: strs){
                 if(word.isEmpty() || word.length() == idx){
                     isProcessing = false;
                     break;
                 }
                 charr = word.charAt(idx);
-                indicesMap.put(charr, forIdx);
-                forIdx++;
+                indicesMap.put(charr, counter);
+                counter++;
             }
             if(indicesMap.size() == 1 && indicesMap.get(charr) == MAX){
                 sb.append(charr);
