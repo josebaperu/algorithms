@@ -1,7 +1,5 @@
 package org.josebaperu.algorithms.miscelaneous;
 
-import java.util.Arrays;
-
 public class FindDuplicateNumbers {
     public static void main(String[] args) {
         int [] arr = {0};
