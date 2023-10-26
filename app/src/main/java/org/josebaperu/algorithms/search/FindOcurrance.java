@@ -1,40 +1,39 @@
 package org.josebaperu.algorithms.search;
 
+import java.util.Arrays;
+
 public class FindOcurrance {
 
-
     public static void main(String[] args) {
-        String stack = "leetcode";
-        String needle = "leeto";
-        System.out.println(strStr(stack,needle));
+        String stack = "mississippi";
+        String needle = "issip";
+        System.out.println(strStr(stack,needle ));
     }
     static int strStr(String haystack, String needle) {
-        int idxFound = -1;
-        StringBuilder sb = new StringBuilder();
-        int needleIdx = 0;
-        for(int i = 0; i < haystack.length()-1;i++){
-            if(sb.length() == needle.length()){
-                if(sb.toString().equals(needle)){
-                    break;
-                } else {
-                    idxFound =-1;
-                }
-            }
-            if( haystack.substring(i, i+1).equals(needle.substring(needleIdx, needleIdx+1))){
+        return helper(haystack.toCharArray(), needle,0);
+    }
 
-                if(sb.isEmpty()){
-                    idxFound = i;
+    static int helper(char[] hayStack, String needle, int idx){
+        if(hayStack.length == 0){
+            return -1;
+        }
+        if(hayStack[0] == needle.charAt(0)){
+            if(hayStack.length >= needle.length()){
+                int innerCounter = 0;
+                for(char c : hayStack){
+                    if(c == needle.charAt(innerCounter)){
+                        if(innerCounter == needle.length()-1){
+                            return idx;
+                        }
+                    } else {
+                        break;
+                    }
+                    innerCounter++;
                 }
-                if(idxFound > -1){
-                    sb.append(haystack.substring(i, i+1));
-                    needleIdx++;
-                }
-
             }
         }
 
-
-        return idxFound;
+        return helper(Arrays.copyOfRange(hayStack,1, hayStack.length), needle,  ++idx);
     }
 
 }
