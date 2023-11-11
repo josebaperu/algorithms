@@ -3,6 +3,7 @@
  */
 package org.josebaperu.algorithms;
 
+import org.josebaperu.leetcode.App;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
