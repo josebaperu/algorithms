@@ -16,6 +16,6 @@ public class CountNodes {
         if(root == null)
             return counter;
 
-        return 1 + doHelper(root.left, counter) + doHelper(root.right, counter);
+        return root.val + doHelper(root.left, counter) + doHelper(root.right, counter);
     }
 }
