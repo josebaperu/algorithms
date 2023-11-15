@@ -1,4 +1,4 @@
-package org.josebaperu.leetcode.sort;
+package org.josebaperu.leetcode.node;
 
 import org.josebaperu.common.ListNode;
 

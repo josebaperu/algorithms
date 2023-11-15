@@ -13,15 +13,24 @@ public class MirrorTree {
 
         node.left.right = new TreeNode(4);
         node.left.left = new TreeNode(3);
-        System.out.println(doCheckSymmetry(node));
-    }https://leetcode.com/problems/symmetric-tree/
-    static boolean doCheckMirror(TreeNode head){
-            if(head == null){
-                return false;
-            }
-            if(head.left.val == head.right.val)
+        System.out.println(doCheckMirror(node));
+    }
+    static boolean doCheckMirror(TreeNode node) {
+        if (node == null) return false;
+        return isMirror(node.left, node.right) ;
+    }
 
-        return doCheckSymmetry(head.left) == doCheckSymmetry( head.right);
+    static boolean isMirror(TreeNode left, TreeNode right){
+        if (left == null && right == null)
+            return true;
+
+
+        if (left != null && right != null
+                && left.val == right.val)
+            return (isMirror(left.left, right.right)
+                    && isMirror(left.right, right.left));
+
+        return false;
     }
 
 }
