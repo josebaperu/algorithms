@@ -22,11 +22,9 @@ public class HappyNumber {
             int sum = list.stream()
                     .mapToInt(e -> (int) Math.pow(e, 2))
                     .sum();
-            boolean isUniqueCycle = set.add(sum);
-            if(!isUniqueCycle) return false;
+            if(!set.add(sum))return false;
 
-
-            return sum == 1 ? true : isHappy(sum, set);
+            return sum == 1 || isHappy(sum, set);
 
     }
 }
