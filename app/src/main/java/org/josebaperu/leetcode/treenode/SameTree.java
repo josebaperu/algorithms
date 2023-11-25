@@ -1,4 +1,4 @@
-package org.josebaperu.leetcode;
+package org.josebaperu.leetcode.treenode;
 
 import org.josebaperu.common.TreeNode;
 
