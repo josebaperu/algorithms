@@ -1,4 +1,4 @@
-package org.josebaperu.leetcode.linkedlist;
+package org.josebaperu.utils;
 
 import org.josebaperu.common.ListNode;
 
