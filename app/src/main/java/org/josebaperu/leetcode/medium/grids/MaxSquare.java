@@ -1,6 +1,7 @@
-package org.josebaperu.leetcode.medium;
+package org.josebaperu.leetcode.medium.grids;
 
 public class MaxSquare {
+
     public static void main(String[] args) {
 
         char[][] mt = {
@@ -11,7 +12,6 @@ public class MaxSquare {
         };
         System.out.println(maxSquare(mt));
     }
-
     static int maxSquare(char[][] matrix){
         int rows = matrix.length;
         int cols = matrix[0].length;
