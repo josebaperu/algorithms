@@ -1,20 +1,37 @@
 package org.josebaperu.leetcode;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ValidAnagram {
     public static void main(String[] args) {
-        String str1 = "anagram";
-        String str2 = "nagaram";
+        String str1 = "aabbbb";
+        String str2 = "aaaabb";
         System.out.println(isValidAnagram(str1, str2));
     }
 
     static boolean isValidAnagram(String s, String t){
         if(s.length() != t.length()) return  false;
-        char[] sArr = s.toCharArray();
-        char[] tArr = t.toCharArray();
-        Arrays.sort(sArr);
-        Arrays.sort(tArr);
-        return Arrays.compare(sArr, tArr) == 0;
+        Map<Character,Integer> map =  new HashMap<>();
+        for(char c: s.toCharArray()){
+            if(!map.containsKey(c)){
+                map.put(c,1);
+            } else {
+                int val = map.get(c)+1;
+                map.put(c,val);
+            }
+        }
+        for(char c: t.toCharArray()){
+            if(map.containsKey(c)){
+                int val = map.get(c)-1;
+                if(val == 0){
+                    map.remove(c);
+                } else {
+                    map.put(c,val);
+                }
+            }
+        }
+
+        return map.isEmpty();
     }
 }
