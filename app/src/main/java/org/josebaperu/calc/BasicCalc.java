@@ -1,70 +1,96 @@
 package org.josebaperu.calc;
 
-
 public class BasicCalc {
-    public static void main( String[] args ) {
-        //System.out.println(doParseParenthesis( "(1-(4-7))" ));
-        System.out.println(doParseParenthesis( "(4+5(12/2)+123*45)" ));
+    public static void main(String[] args) {
+        System.out.println(doParseParenthesis("(1-(4-7))"));
+        System.out.println(doParseParenthesis("1-(4-7)*9"));
+        System.out.println(doParseParenthesis("(3+5(3*4)(1+2))"));
+        System.out.println(doParseParenthesis("6"));
+        System.out.println(doParseParenthesis("(11)"));
+        System.out.println(doParseParenthesis("(11+5)"));
     }
-    static int doParseParenthesis(String input) {
-        boolean multiOrDiv = true;
-        while(multiOrDiv){
-            if(input.contains("*")){
-                int idxMulti = input.indexOf("*");
-                input = handleOperation(input,"*",idxMulti);
-            } else if(input.contains("/")){
-                int idxMulti = input.indexOf("/");
-                input = handleOperation(input,"/",idxMulti);
-            } else {
-                multiOrDiv = false;
-            }
 
+    static String doParseParenthesis(String input) {
+        if (!containsParenthesis(input) && !containsOperation(input)) {
+            return input;
+        } else if (!containsOperation(input) && containsParenthesis(input)) {
+            return input.replace("(", "").replace(")", "");
         }
-        input = input.replaceAll("\\(","").replaceAll("\\)","");
-        System.out.println(input);
-        return -1;
+        int i = 0;
+        int openingIdx = -1;
+        String inputCopy = input;
+        while (i < input.length()) {
+            char current = input.charAt(i);
+            if (isOpening(current)) {
+                openingIdx = i;
+            }
+            if (isClosing(current) && openingIdx > -1) {
+                String expression = input.substring(openingIdx + 1, i);
+                if (containsOperation(expression)) {
+                    inputCopy = inputCopy.replace(expression, resolve(expression));
+                    openingIdx = -1;
+                }
+            }
+            i++;
+        }
+        if (inputCopy.charAt(0) == '(' && inputCopy.charAt(inputCopy.length() - 1) == ')') {
+            inputCopy = inputCopy.substring(1, inputCopy.length() - 1);
+        }
+        return inputCopy;
     }
-    static String handleOperation(String str,String op, int idx){
+
+    static String resolve(String s) {
+        String first = "";
+        String last = "";
+        char operator = ' ';
+        boolean isFirstSet = false;
+        for (char c : s.toCharArray()) {
+            if (isNumeric(c)) {
+                if (!isFirstSet) {
+                    first = first + c;
+                } else {
+                    last = last + c;
+                }
+            } else {
+                isFirstSet = true;
+                operator = c;
+            }
+        }
+        return performOperation(first, operator, last);
+    }
+
+    static String performOperation(String first, char op, String last) {
         int res = 0;
-        int min = 0;
-        int max = str.length()-1;
-        boolean isCompleteLeft = false;
-        boolean isCompleteRight = false;
-        int idxR = idx+1;
-        int idxL = idx-1;
-        String left = "";
-        String right = "";
-        while(true){
-            char l = str.charAt(idxL);
-            char r = str.charAt(idxR);
-            if(l != '(' && l != '+' && l != '-' && l != '*' && l != '/'){
-                left = left + l;
-            } else {
-                isCompleteLeft = true;
-            }
-            if(r!= ')' && r != '+' && r != '-' && r != '*' && r != '/'){
-                right = right + r;
-            } else {
-                isCompleteRight = true;
-            }
-            if(isCompleteRight && isCompleteLeft)break;
-
-            if(idxR < max){
-                idxR++;
-            }
-            if(0 < idxL){
-                idxL--;
-            }
-
-        }
-        if(op.equals("*")){
-            return str.substring(0,idxL+1) + (Integer.parseInt(reverse(left)) * Integer.parseInt(right)) + str.substring(idxR);
+        if (op == '+') {
+            res = Integer.valueOf(first) + Integer.valueOf(last);
+        } else if (op == '-') {
+            res = Integer.valueOf(first) - Integer.valueOf(last);
+        } else if (op == '*') {
+            res = Integer.valueOf(first) * Integer.valueOf(last);
         } else {
-            return str.substring(0,idxL+1) + (Integer.parseInt(reverse(left)) / Integer.parseInt(right)) + str.substring(idxR);
+            res = Integer.valueOf(first) / Integer.valueOf(last);
         }
+        return String.valueOf(res);
     }
-    static String reverse(String num){
-        return new StringBuilder(num).reverse().toString();
+
+    static boolean isOpening(char c) {
+        return c == '(';
+    }
+
+    static boolean isClosing(char c) {
+        return c == ')';
+    }
+
+    static boolean containsOperation(String s) {
+        return s.contains("+") || s.contains("-") || s.contains("/") || s.contains("*");
+    }
+
+    static boolean containsParenthesis(String s) {
+        return s.contains("(") || s.contains(")");
+    }
+
+    static boolean isNumeric(char c) {
+        return c != '+' && c != '-' && c != '*' && c != '/';
     }
 }
 
