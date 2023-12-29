@@ -2,20 +2,29 @@ package org.josebaperu.calc;
 
 public class BasicCalc {
     public static void main(String[] args) {
-        System.out.println(doParseParenthesis("(1-(4-7))"));
-        System.out.println(doParseParenthesis("1-(4-7)*9"));
-        System.out.println(doParseParenthesis("(3+5(3*4)(1+2))"));
-        System.out.println(doParseParenthesis("6"));
-        System.out.println(doParseParenthesis("(11)"));
-        System.out.println(doParseParenthesis("(11+5)"));
+        System.out.println(doHandleOperation("(1-(4-7))"));
+        System.out.println(doHandleOperation("1-(4-7)*9"));
+        System.out.println(doHandleOperation("(3+5(3*4)(1+2))"));
+        System.out.println(doHandleOperation("6"));
+        System.out.println(doHandleOperation("(11)1(5)"));
+        System.out.println(doHandleOperation("(11+5)"));
     }
 
-    static String doParseParenthesis(String input) {
+    static String doHandleOperation(String input) {
         if (!containsParenthesis(input) && !containsOperation(input)) {
             return input;
-        } else if (!containsOperation(input) && containsParenthesis(input)) {
-            return input.replace("(", "").replace(")", "");
         }
+        input = resolveInnerParenthesis(input);
+        return doPerformLinearOperation(input);
+    }
+    static String doPerformLinearOperation(String input){
+        if(!containsParenthesis(input)){
+            System.out.println(true);
+        } 
+
+        return input;
+    }
+    private static String resolveInnerParenthesis(String input) {
         int i = 0;
         int openingIdx = -1;
         String inputCopy = input;
@@ -27,19 +36,16 @@ public class BasicCalc {
             if (isClosing(current) && openingIdx > -1) {
                 String expression = input.substring(openingIdx + 1, i);
                 if (containsOperation(expression)) {
-                    inputCopy = inputCopy.replace(expression, resolve(expression));
+                    inputCopy = inputCopy.replace(expression, resolveExpression(expression));
                     openingIdx = -1;
                 }
             }
             i++;
         }
-        if (inputCopy.charAt(0) == '(' && inputCopy.charAt(inputCopy.length() - 1) == ')') {
-            inputCopy = inputCopy.substring(1, inputCopy.length() - 1);
-        }
         return inputCopy;
     }
 
-    static String resolve(String s) {
+    static String resolveExpression(String s) {
         String first = "";
         String last = "";
         char operator = ' ';
