@@ -1,6 +1,5 @@
 package org.josebaperu.calc;
 
-
 public class BasicCalc {
     public static void main(String[] args) {
         System.out.println(doHandleOperation("1-(4-7)*9")); //
@@ -11,18 +10,17 @@ public class BasicCalc {
         System.out.println(doHandleOperation("(11+5)"));//
         System.out.println(doHandleOperation("5+8*9"));//
         System.out.println(doHandleOperation("(3+5(3*4)(1+2))"));
-
     }
 
     static String doHandleOperation(String input) {
-        if (!containsParenthesis(input) && !containsOperation(input)) {
+        if (containsParenthesis(input) && !containsOperation(input)) {
             return input;
         }
         input = performOperation(input);
         return doPerformLinearOperation(input);
     }
     static String doPerformLinearOperation(String input){
-        if(!containsParenthesis(input)){
+        if(containsParenthesis(input)){
             return resolveExpression(input);
         } else{
             input = sanitizeParenthesis(input);
@@ -95,21 +93,20 @@ public class BasicCalc {
         int l= idx -1;
         boolean isR = false;
         boolean isL = false;
-        String first ="";
-        String last ="";
+        StringBuilder first = new StringBuilder();
+        StringBuilder last = new StringBuilder();
 
         char charL;
         char charR;
         while(!(isR && isL)){
-            if(isR && isL)break;
 
             if(l >= 0 && !isL){
                 charL = str.charAt(l);
                 if(isNumeric(charL)){
-                    first = first + charL;
+                    first.append(charL);
                 } else {
                     if(charL == '-'){
-                        first = first + charL;
+                        first.append(charL);
                     }
                     isL = true;
                 }
@@ -120,7 +117,7 @@ public class BasicCalc {
             if(r < str.length() && !isR){
                charR = str.charAt(r);
                if(isNumeric(charR)){
-                   last = last +charR;
+                   last.append(charR);
                } else {
                    isR = true;
                }
@@ -133,16 +130,19 @@ public class BasicCalc {
 
         }
         int res;
+        String reversedFirst = reverse(first.toString());
+        int intReversedFirst = Integer.parseInt(reversedFirst);
+        int intLast = Integer.parseInt(last.toString());
         if (op == '+') {
-            res = Integer.valueOf(reverse(first)) + Integer.valueOf(last);
+            res =intReversedFirst + intLast;
         } else if (op == '-') {
-            res = Integer.valueOf(reverse(first)) - Integer.valueOf(last);
+            res = intReversedFirst - intLast;
         } else if (op == '*') {
-            res = Integer.valueOf(reverse(first)) * Integer.valueOf(last);
+            res = intReversedFirst * intLast;
         } else {
-            res = Integer.valueOf(reverse(first)) / Integer.valueOf(last);
+            res = intReversedFirst / intLast;
         }
-        str = str.replace(reverse(first)+op+last,String.valueOf(res));
+        str = str.replace(reversedFirst + op + last, String.valueOf(res));
         return str;
     }
 
@@ -170,7 +170,7 @@ public class BasicCalc {
         return s.contains("/");
     }
     static boolean containsParenthesis(String s) {
-        return s.contains("(") || s.contains(")");
+        return !s.contains("(") && !s.contains(")");
     }
 
     static boolean isNumeric(char c) {
