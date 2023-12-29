@@ -1,10 +1,16 @@
 package org.josebaperu.calc;
 
-import java.util.Stack;
 
 public class BasicCalc {
     public static void main(String[] args) {
+        System.out.println(doHandleOperation("1-(4-7)*9")); //
         System.out.println(doHandleOperation("(1-(4-71+81))")); //
+        System.out.println(doHandleOperation("(11)1(5*8/10)"));
+        System.out.println(doHandleOperation("(1)(2)")); //
+        System.out.println(doHandleOperation("6"));//
+        System.out.println(doHandleOperation("(11+5)"));//
+        System.out.println(doHandleOperation("5+8*9"));//
+        System.out.println(doHandleOperation("(3+5(3*4)(1+2))"));
 
     }
 
@@ -65,16 +71,16 @@ public class BasicCalc {
             return s;
         }
         if(isMulti(s)){
-            s = performOperation(s, '*', s.indexOf("*"));
+            return resolveExpression(performOperation(s, '*', s.indexOf("*")));
         }
         if(isDiv(s)){
-            s = performOperation(s, '/',s.indexOf("/"));
+            return resolveExpression(performOperation(s, '/', s.indexOf("/")));
         }
         if(isSubs(s)){
-            s = performOperation(s, '-',s.indexOf("-"));
+            return resolveExpression(performOperation(s, '-', s.indexOf("-")));
         }
         if(isSum(s)){
-            s = performOperation(s, '+',s.indexOf("+"));
+            return resolveExpression(performOperation(s, '+', s.indexOf("+")));
         }
 
         return resolveExpression(s);
@@ -102,6 +108,9 @@ public class BasicCalc {
                 if(isNumeric(charL)){
                     first = first + charL;
                 } else {
+                    if(charL == '-'){
+                        first = first + charL;
+                    }
                     isL = true;
                 }
 
