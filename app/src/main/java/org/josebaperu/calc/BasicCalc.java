@@ -20,12 +20,10 @@ public class BasicCalc {
         return doPerformLinearOperation(input);
     }
     static String doPerformLinearOperation(String input){
-        if(containsParenthesis(input)){
-            return resolveExpression(input);
-        } else{
+        if (!containsParenthesis(input)) {
             input = sanitizeParenthesis(input);
-            return resolveExpression(input);
         }
+        return resolveExpression(input);
     }
     static String sanitizeParenthesis(String s){
         s = s.replaceAll("\\)\\(","*");
@@ -43,7 +41,7 @@ public class BasicCalc {
         strCopy = strCopy.replaceAll("\\(","").replaceAll("\\)","").replaceAll("-+","-").replaceAll("\\++","+").replaceAll("--","+").replaceAll("\\++","+");
         return strCopy;
     }
-    private static String performOperation(String input) {
+    static String performOperation(String input) {
         int i = 0;
         int openingIdx = -1;
         String inputCopy = input;
