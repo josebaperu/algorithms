@@ -2,25 +2,26 @@ package org.josebaperu.calc;
 
 public class BasicCalc {
     public static void main(String[] args) {
-        System.out.println(doHandleOperation("1-(4-7)*9")); //
-        System.out.println(doHandleOperation("(1-(4-71+81))")); //
-        System.out.println(doHandleOperation("(11)1(5*8/10)"));
-        System.out.println(doHandleOperation("(1)(2)")); //
-        System.out.println(doHandleOperation("6"));//
-        System.out.println(doHandleOperation("(11+5)"));//
-        System.out.println(doHandleOperation("5+8*9"));//
-        System.out.println(doHandleOperation("(3+5(3*4)(1+2))"));
+        System.out.println(doExecuteAndParseString("1-(4-7)*9")); //
+        System.out.println(doExecuteAndParseString("(1-(4-71+81))")); //
+        System.out.println(doExecuteAndParseString("(11)1(5*8/10)"));
+        System.out.println(doExecuteAndParseString("(1)(2)")); //
+        System.out.println(doExecuteAndParseString("6"));//
+        System.out.println(doExecuteAndParseString("(1)"));//
+        System.out.println(doExecuteAndParseString("(11+5)"));//
+        System.out.println(doExecuteAndParseString("5+8*9"));//
+        System.out.println(doExecuteAndParseString("(3+5(3*4)(1+2))"));
     }
 
-    static String doHandleOperation(String input) {
-        if (containsParenthesis(input) && !containsOperation(input)) {
+    static String doExecuteAndParseString(String input) {
+        if (hasNoParenthesis(input) && !containsOperation(input)) {
             return input;
         }
-        input = performOperation(input);
+        input = doResolveOperationsWithinParenthesis(input);
         return doPerformLinearOperation(input);
     }
     static String doPerformLinearOperation(String input){
-        if (!containsParenthesis(input)) {
+        if (!hasNoParenthesis(input)) {
             input = sanitizeParenthesis(input);
         }
         return resolveExpression(input);
@@ -41,7 +42,7 @@ public class BasicCalc {
         strCopy = strCopy.replaceAll("\\(","").replaceAll("\\)","").replaceAll("-+","-").replaceAll("\\++","+").replaceAll("--","+").replaceAll("\\++","+");
         return strCopy;
     }
-    static String performOperation(String input) {
+    static String doResolveOperationsWithinParenthesis(String input) {
         int i = 0;
         int openingIdx = -1;
         String inputCopy = input;
@@ -67,16 +68,16 @@ public class BasicCalc {
             return s;
         }
         if(isMulti(s)){
-            return resolveExpression(performOperation(s, '*', s.indexOf("*")));
+            return resolveExpression(doResolveOperationsWithinParenthesis(s, '*', s.indexOf("*")));
         }
         if(isDiv(s)){
-            return resolveExpression(performOperation(s, '/', s.indexOf("/")));
+            return resolveExpression(doResolveOperationsWithinParenthesis(s, '/', s.indexOf("/")));
         }
         if(isSubs(s)){
-            return resolveExpression(performOperation(s, '-', s.indexOf("-")));
+            return resolveExpression(doResolveOperationsWithinParenthesis(s, '-', s.indexOf("-")));
         }
         if(isSum(s)){
-            return resolveExpression(performOperation(s, '+', s.indexOf("+")));
+            return resolveExpression(doResolveOperationsWithinParenthesis(s, '+', s.indexOf("+")));
         }
 
         return resolveExpression(s);
@@ -86,7 +87,7 @@ public class BasicCalc {
       return new StringBuilder(s).reverse().toString();
     }
 
-    static String performOperation(String str, char op, int idx) {
+    static String doResolveOperationsWithinParenthesis(String str, char op, int idx) {
         int r= idx +1;
         int l= idx -1;
         boolean isR = false;
@@ -167,7 +168,7 @@ public class BasicCalc {
     static boolean isDiv(String s) {
         return s.contains("/");
     }
-    static boolean containsParenthesis(String s) {
+    static boolean hasNoParenthesis(String s) {
         return !s.contains("(") && !s.contains(")");
     }
 
