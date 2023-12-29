@@ -1,30 +1,45 @@
 package org.josebaperu.calc;
 
+import java.util.Stack;
+
 public class BasicCalc {
     public static void main(String[] args) {
-        System.out.println(doHandleOperation("(1-(4-7))"));
-        System.out.println(doHandleOperation("1-(4-7)*9"));
-        System.out.println(doHandleOperation("(3+5(3*4)(1+2))"));
-        System.out.println(doHandleOperation("6"));
-        System.out.println(doHandleOperation("(11)1(5)"));
-        System.out.println(doHandleOperation("(11+5)"));
+        System.out.println(doHandleOperation("(1-(4-71+81))")); //
+
     }
 
     static String doHandleOperation(String input) {
         if (!containsParenthesis(input) && !containsOperation(input)) {
             return input;
         }
-        input = resolveInnerParenthesis(input);
+        input = performOperation(input);
         return doPerformLinearOperation(input);
     }
     static String doPerformLinearOperation(String input){
         if(!containsParenthesis(input)){
-            System.out.println(true);
-        } 
-
-        return input;
+            return resolveExpression(input);
+        } else{
+            input = sanitizeParenthesis(input);
+            return resolveExpression(input);
+        }
     }
-    private static String resolveInnerParenthesis(String input) {
+    static String sanitizeParenthesis(String s){
+        s = s.replaceAll("\\)\\(","*");
+        String strCopy = s;
+        for(int i =0 ; i< s.length()-3;i++){
+            if(s.charAt(i+1) == ')' && isNumeric(s.charAt(i+2))){
+                String pattern = s.charAt(i + 1) + "" + s.charAt(i + 2);
+                strCopy = strCopy.replace(pattern,"*"+s.charAt(i+2));
+            }
+            if(isNumeric(s.charAt(i)) && s.charAt(i+1) == '('){
+                String pattern = s.charAt(i) + "" + s.charAt(i + 1);
+                strCopy = strCopy.replace(pattern, s.charAt(i)+"*");
+            }
+        }
+        strCopy = strCopy.replaceAll("\\(","").replaceAll("\\)","").replaceAll("-+","-").replaceAll("\\++","+").replaceAll("--","+").replaceAll("\\++","+");
+        return strCopy;
+    }
+    private static String performOperation(String input) {
         int i = 0;
         int openingIdx = -1;
         String inputCopy = input;
@@ -46,37 +61,80 @@ public class BasicCalc {
     }
 
     static String resolveExpression(String s) {
-        String first = "";
-        String last = "";
-        char operator = ' ';
-        boolean isFirstSet = false;
-        for (char c : s.toCharArray()) {
-            if (isNumeric(c)) {
-                if (!isFirstSet) {
-                    first = first + c;
-                } else {
-                    last = last + c;
-                }
-            } else {
-                isFirstSet = true;
-                operator = c;
-            }
+        if(!containsOperation(s)){
+            return s;
         }
-        return performOperation(first, operator, last);
+        if(isMulti(s)){
+            s = performOperation(s, '*', s.indexOf("*"));
+        }
+        if(isDiv(s)){
+            s = performOperation(s, '/',s.indexOf("/"));
+        }
+        if(isSubs(s)){
+            s = performOperation(s, '-',s.indexOf("-"));
+        }
+        if(isSum(s)){
+            s = performOperation(s, '+',s.indexOf("+"));
+        }
+
+        return resolveExpression(s);
     }
 
-    static String performOperation(String first, char op, String last) {
-        int res = 0;
-        if (op == '+') {
-            res = Integer.valueOf(first) + Integer.valueOf(last);
-        } else if (op == '-') {
-            res = Integer.valueOf(first) - Integer.valueOf(last);
-        } else if (op == '*') {
-            res = Integer.valueOf(first) * Integer.valueOf(last);
-        } else {
-            res = Integer.valueOf(first) / Integer.valueOf(last);
+    static String reverse(String s){
+      return new StringBuilder(s).reverse().toString();
+    }
+
+    static String performOperation(String str, char op, int idx) {
+        int r= idx +1;
+        int l= idx -1;
+        boolean isR = false;
+        boolean isL = false;
+        String first ="";
+        String last ="";
+
+        char charL;
+        char charR;
+        while(!(isR && isL)){
+            if(isR && isL)break;
+
+            if(l >= 0 && !isL){
+                charL = str.charAt(l);
+                if(isNumeric(charL)){
+                    first = first + charL;
+                } else {
+                    isL = true;
+                }
+
+            } else {
+                isL = true;
+            }
+            if(r < str.length() && !isR){
+               charR = str.charAt(r);
+               if(isNumeric(charR)){
+                   last = last +charR;
+               } else {
+                   isR = true;
+               }
+
+            } else {
+                isR = true;
+            }
+            l--;
+            r++;
+
         }
-        return String.valueOf(res);
+        int res;
+        if (op == '+') {
+            res = Integer.valueOf(reverse(first)) + Integer.valueOf(last);
+        } else if (op == '-') {
+            res = Integer.valueOf(reverse(first)) - Integer.valueOf(last);
+        } else if (op == '*') {
+            res = Integer.valueOf(reverse(first)) * Integer.valueOf(last);
+        } else {
+            res = Integer.valueOf(reverse(first)) / Integer.valueOf(last);
+        }
+        str = str.replace(reverse(first)+op+last,String.valueOf(res));
+        return str;
     }
 
     static boolean isOpening(char c) {
@@ -88,9 +146,20 @@ public class BasicCalc {
     }
 
     static boolean containsOperation(String s) {
-        return s.contains("+") || s.contains("-") || s.contains("/") || s.contains("*");
+        return isSum(s) || isSubs(s) || isMulti(s) || isDiv(s);
     }
-
+    static boolean isSum(String s) {
+        return s.contains("+");
+    }
+    static boolean isSubs(String s) {
+        return s.contains("-") && s.indexOf("-") > 0;
+    }
+    static boolean isMulti(String s) {
+        return s.contains("*");
+    }
+    static boolean isDiv(String s) {
+        return s.contains("/");
+    }
     static boolean containsParenthesis(String s) {
         return s.contains("(") || s.contains(")");
     }
